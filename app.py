@@ -8,6 +8,7 @@ app.config['SECRET_KEY'] = '12345'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db' #Caminho do banco de dados
 
 db.init_app(app)
+
 #CREATE
 @app.route("/snack", methods=['POST'])
 def create_snack():
@@ -17,7 +18,7 @@ def create_snack():
     description = data.get('description')
     hasDiet = data.get('hasDiet')
     
-    if name and description and hasDiet:
+    if name and description and hasDiet != None:
         snack = Snack(name=name, description=description, date=datetime.now(), hasDiet=hasDiet)
         db.session.add(snack)
         db.session.commit()
@@ -42,6 +43,7 @@ def update_snack(id):
     
     return jsonify({"message": "Refeição não encontrado"}), 404
     
+#DELETE
 @app.route("/snack/<int:id>", methods=['DELETE'])
 def delete_snack(id):
     snack = Snack.query.get(id)
@@ -53,5 +55,22 @@ def delete_snack(id):
         return jsonify({"message": f"Refeição deletada com sucesso!"})
     return jsonify({"message": "Refeição não encontrado"}), 404
 
+#LISTAR TOTAL
+@app.route("/snacks", methods=['GET'])
+def get_snacks():
+    
+    snacks = Snack.query.all()
+    
+    snacks_list = []
+    
+    for s in snacks:
+        snacks_list.append(s.to_dict())
+        
+    return jsonify(snacks_list)
+
+
+    
+    
+        
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True) 
