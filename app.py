@@ -68,9 +68,20 @@ def get_snacks():
         
     return jsonify(snacks_list)
 
-
+#LISTAR UM
+@app.route("/snacks/<int:id>", methods=['GET'])
+def get_snack(id):
+    snack = Snack.query.get(id)
     
+    if snack:
+        snack_JSON = {
+            "name": snack.name,
+            "description": snack.description,
+            "date": snack.date,
+            "hasDiet": snack.hasDiet
+        }
+        return jsonify(snack_JSON)
     
-        
+    return jsonify({"message": "Refeição não encontrado"}), 404
 if __name__ == '__main__':
     app.run(debug=True) 
