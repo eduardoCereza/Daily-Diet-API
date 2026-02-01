@@ -25,5 +25,23 @@ def create_snack():
     
     return jsonify({"message": "Campos vazios!"}), 400
 
+#UPDATE
+@app.route("/snack/<int:id>", methods=['PUT'])
+def update_snack(id):
+    data = request.json
+    
+    snack = Snack.query.get(id)
+    
+    if snack :
+        snack.name = data['name']
+        snack.description = data['description']
+        snack.hasDiet = data['hasDiet']
+        
+        db.session.commit()
+        return jsonify({"message": f"Refeição atualizada com sucesso!"})
+    
+    return jsonify({"message": "Refeição não encontrado"}), 404
+    
+
 if __name__ == '__main__':
     app.run(debug=True)
